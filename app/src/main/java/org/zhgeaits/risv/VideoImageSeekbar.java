@@ -2,6 +2,7 @@ package org.zhgeaits.risv;
 
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.SparseIntArray;
 import android.view.Gravity;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,7 +205,7 @@ public class VideoImageSeekbar extends RelativeLayout {
         mLastImageWidthPercent = percent;
     }
 
-    public void setImageList(List<String> paths) {
+    private void setImageList0(List<Drawable> lists) {
         mList.removeAllViews();
 
         mImageHeight = DimenConverter.dip2px(mContext, 36);
@@ -219,19 +221,19 @@ public class VideoImageSeekbar extends RelativeLayout {
         mList.addView(leftBlank);
 
         mImageBarLen = 0;
-        for (int i = 0; i < paths.size(); i++) {
+        for (int i = 0; i < lists.size(); i++) {
 
             ImageView imageView = new ImageView(mContext);
 
             int destWidth = mImageWidth;
-            if (i == paths.size() - 1) {
+            if (i == lists.size() - 1) {
                 destWidth = (int) (mImageWidth * mLastImageWidthPercent);
             }
 
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(destWidth, mImageHeight);
             params.gravity = Gravity.CENTER_VERTICAL;
             imageView.setLayoutParams(params);
-            imageView.setBackgroundDrawable(BitmapDrawable.createFromPath(paths.get(i)));
+            imageView.setBackgroundDrawable(lists.get(i));
             mList.addView(imageView);
             mImageBarLen += destWidth;
         }
@@ -244,6 +246,24 @@ public class VideoImageSeekbar extends RelativeLayout {
         mHorizontalScrollView.setBarLength(getWidth());
         mHorizontalScrollView.setImageBarLen(mImageBarLen);
         mHorizontalScrollView.setSeekWidth(mImageBarLen + mLeftBlankWidth + mRightBlankWidth);
+    }
+
+    public void setImageListPath(List<String> paths) {
+        List<Drawable> lists = new ArrayList<>();
+        for(int i = 0; i < paths.size(); i ++) {
+            Drawable drawable = BitmapDrawable.createFromPath(paths.get(i));
+            lists.add(drawable);
+        }
+        setImageList0(lists);
+    }
+
+    public void setImageListIds(List<Integer> ids) {
+        List<Drawable> lists = new ArrayList<>();
+        for(int i = 0; i < ids.size(); i ++) {
+            Drawable drawable = getResources().getDrawable(ids.get(i));
+            lists.add(drawable);
+        }
+        setImageList0(lists);
     }
 
     /**
@@ -570,7 +590,6 @@ public class VideoImageSeekbar extends RelativeLayout {
 
     public interface OnSeekbarChangedListener {
         void onProgressChanged(double progress, boolean fromUser);
-
         void onRangeChanged(int id, double startPercent, double selectPercent);
     }
 }

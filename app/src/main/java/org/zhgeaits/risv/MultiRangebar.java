@@ -98,10 +98,6 @@ public class MultiRangebar extends View {
         invalidate();
     }
 
-    /**
-     * 设置bar的长�?
-     * @param barWidth
-     */
     public void setBarWidth(int barWidth) {
         this.mBarWidth = barWidth;
     }

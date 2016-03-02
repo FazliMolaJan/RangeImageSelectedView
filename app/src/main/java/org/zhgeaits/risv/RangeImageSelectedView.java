@@ -421,7 +421,7 @@ public class RangeImageSelectedView extends View {
                 }
 
                 //如果已经顶到最右端了则缩小窗口，否则整体移动
-                //2015-10-29最终决定，只能右边移动，不能缩小窗口
+                //只能右边移动，不能缩小窗口
                 if(rightStart >= mSeekWidth - mRightBlankWidth) {
                     return;
                     /*int windowLen = mWindowLen - distance;
@@ -481,7 +481,7 @@ public class RangeImageSelectedView extends View {
                 }
 
                 //如果已经顶到最左端了则缩小窗口，否则整体移动
-                //2015-10-29：如果顶到最左端以后不允许缩小了，无法拖动。
+                //如果顶到最左端以后不允许缩小了，无法拖动。
                 if(startLeft + mSelectWidth <= mLeftBlankWidth) {
                     /*int windowLen = mWindowLen + distance;
                     mWindowLen = windowLen;
