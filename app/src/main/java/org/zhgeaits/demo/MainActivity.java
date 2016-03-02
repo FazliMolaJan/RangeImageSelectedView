@@ -1,9 +1,12 @@
-package org.zhgeaits.risv;
+package org.zhgeaits.demo;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import org.zhgeaits.risv.R;
+import org.zhgeaits.risv.VideoImageSeekbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -11,5 +14,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        VideoImageSeekbar seekbar = (VideoImageSeekbar) findViewById(R.id.image_bar);
+
     }
 }

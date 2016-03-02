@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp">
+
+        <org.zhgeaits.risv.CustomHorizontalScrollView
+            android:id="@+id/video_image_horizontal_scrollview"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/img_bar_bg"
+            android:overScrollMode="never"
+            android:scrollbars="none">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:id="@+id/video_image_seekbar_container"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/video_image_seekbar_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal" />
+
+            </RelativeLayout>
+
+        </org.zhgeaits.risv.CustomHorizontalScrollView>
+
+        <ImageView
+            android:id="@+id/video_image_seekbar_selectbar"
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:background="@mipmap/vertical_bar" />
+
+    </RelativeLayout>
+</merge>
