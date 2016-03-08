@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2016 Zhang Ge <zhgeaits@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.zhgeaits.risv;
 
 import android.content.Context;
@@ -20,34 +35,35 @@ import java.util.Map;
 
 /**
  * Created by zhangge on 2015/9/24.
+ * 区间范围选择控件
  */
 public class VideoImageSeekbar extends RelativeLayout {
 
     private Context mContext;
     private View mRoot;
     private LayoutInflater mInflater;
-    private ImageView mSelectbar;
     private LinearLayout mList;
     private RangeImageSelectedView mRangeView;
     private CustomHorizontalScrollView mHorizontalScrollView;
     private RelativeLayout mSeekbarContainer;
-    private RelativeLayout.LayoutParams mSelectbarParams;//选择进度条的布局参数
+    private ImageView mSelectbar;                                   //进度条
+    private RelativeLayout.LayoutParams mSelectbarParams;           //选择进度条的布局参数
     private MultiRangebar mRangebar;
     private MultiPointBar mPointbar;
 
     private Map<Integer, RangeImageSelectedView> mCacheRangeView;
     private SparseIntArray mDanmuColor;
 
-    private int mImageBarLen;//图片的长度，进度条真正意义的像素长度
-    private int mLeftBlankWidth;//左边空白处的宽度
-    private int mRightBlankWidth;//右边空白出的宽度
-    private int mSelectbarWidth;//中间竖条的宽度
-    private int mCurrentProgress;//光标所在的位置，像素
-    private int mMaxProgress = 100;//进度条的长度，不包含前后的空白，默认是100
-    private int mMinSelectProgress = 0;//最少的窗口选择宽度，默认是0
-    private int mImageHeight;//图片的宽度
-    private int mImageWidth;//图片的高度
-    private double mLastImageWidthPercent = 1.0d;//最后一张图片的宽度的百分比
+    private int mImageBarLen;                                       //图片的长度，进度条真正意义的像素长度
+    private int mLeftBlankWidth;                                    //左边空白处的宽度
+    private int mRightBlankWidth;                                   //右边空白出的宽度
+    private int mSelectbarWidth;                                    //中间竖条的宽度
+    private int mCurrentProgress;                                   //光标所在的位置，像素
+    private int mMaxProgress = 100;                                 //进度条的长度，不包含前后的空白，默认是100
+    private int mMinSelectProgress = 0;                             //最少的窗口选择宽度，默认是0
+    private int mImageHeight;                                       //图片的宽度
+    private int mImageWidth;                                        //图片的高度
+    private double mLastImageWidthPercent = 1.0d;                   //最后一张图片的宽度的百分比
 
     private OnSeekbarChangedListener mProgressChangeListener;//滚动的监听器
 
@@ -475,7 +491,7 @@ public class VideoImageSeekbar extends RelativeLayout {
      * @param startProgress
      * @param selectProgress
      */
-    public void addLabelRangeView(int id, double startProgress, int selectProgress) {
+    public void addScaledRangeView(int id, double startProgress, int selectProgress) {
         addRangeView(id, startProgress, selectProgress, RangeImageSelectedView.CHANGE_TYPE_SCALE, 0);
     }
 
@@ -486,7 +502,7 @@ public class VideoImageSeekbar extends RelativeLayout {
      * @param startProgress
      * @param selectProgress
      */
-    public void addDanmuRangeView(int id, double startProgress, int selectProgress, int maxWindowProgress) {
+    public void addFixedRangeView(int id, double startProgress, int selectProgress, int maxWindowProgress) {
         addRangeView(id, startProgress, selectProgress, RangeImageSelectedView.CHANGE_TYPE_MOVE, maxWindowProgress);
     }
 
@@ -529,7 +545,7 @@ public class VideoImageSeekbar extends RelativeLayout {
         //图片标签才会有最小宽度，弹幕没有，默认是0
         mRangeView.setMinWindowLen(minWindowLen);
 
-        //如果是弹幕的选择框才会有最大值
+        //如果是固定的选择框才会有最大值
         if (changeType == RangeImageSelectedView.CHANGE_TYPE_MOVE) {
             if (maxWindowLen > 0) {
                 mRangeView.setMaxWindowLen(maxWindowLen);

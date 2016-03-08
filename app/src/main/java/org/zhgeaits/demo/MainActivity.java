@@ -1,10 +1,9 @@
 package org.zhgeaits.demo;
 
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 
 import org.zhgeaits.risv.R;
 import org.zhgeaits.risv.VideoImageSeekbar;
@@ -12,9 +11,15 @@ import org.zhgeaits.risv.VideoImageSeekbar;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private VideoImageSeekbar seekbar;
+    private Button setImage;
+    private Button addWindow;
+    private Button addFixedWindow;
+    private Button addrange;
+    private Button addpoint;
+    private Button removeWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,21 +27,59 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         seekbar = (VideoImageSeekbar) findViewById(R.id.image_bar);
+        setImage = (Button) findViewById(R.id.set_image);
+        addWindow = (Button) findViewById(R.id.window);
+        addFixedWindow = (Button) findViewById(R.id.fixed_window);
+        addrange = (Button) findViewById(R.id.add_range_bar);
+        addpoint = (Button) findViewById(R.id.add_range_point);
+        removeWindow = (Button) findViewById(R.id.remove_window);
 
-        List<Integer> ids = new ArrayList<>();
-        for (int i = 0; i < 20; i ++) {
-            ids.add(R.mipmap.test);
-        }
-        seekbar.setProgress(0);
-        seekbar.setImageListIds(ids);
-        seekbar.setLeftChange(true);
-
-        new Handler().postDelayed(new Runnable() {
+        setImage.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                seekbar.addLabelRangeView(0, 20d, 30);
+            public void onClick(View v) {
+                List<Integer> ids = new ArrayList<>();
+                for (int i = 0; i < 20; i++) {
+                    ids.add(R.mipmap.test);
+                }
+                seekbar.setProgress(0);
+                seekbar.setImageListIds(ids);
             }
-        }, 2000);
+        });
+
+        addWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seekbar.addScaledRangeView(0, 0, 30);
+            }
+        });
+
+        removeWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seekbar.removeRangeView(0);
+            }
+        });
+
+        addFixedWindow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                seekbar.addFixedRangeView(0, 0, 30, 30);
+            }
+        });
+
+        addrange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        addpoint.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
 }
