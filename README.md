@@ -1,6 +1,6 @@
 ## 效果
 
-![alt demo](/rangeview.gif "demo")
+![alt demo](http://ww1.sinaimg.cn/large/96ea0fd8gw1f1pmu5cpgkg209s0h619m.gif "demo")
 
 ## 使用
 
