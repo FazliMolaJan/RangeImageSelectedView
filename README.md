@@ -1,2 +1,9 @@
-# RangeImageSelectedView
-android range selected view like select video range in ios app iMovie
+## 效果
+
+![alt demo](/rangeview.gif "demo")
+
+## 使用
+
+这是一个简单的区间选择控件，从以前的项目抽取出来的，所以里面会有包含一些业务代码，不过由于控件简单，请可以随意修改使用。
+
+## 实现
