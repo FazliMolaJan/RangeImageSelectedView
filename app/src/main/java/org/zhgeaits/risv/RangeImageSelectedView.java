@@ -463,7 +463,7 @@ public class RangeImageSelectedView extends View {
 
         } else if (hintState == HINT_DIRECTION_RIGHT) {
 
-            //现在弹幕的右边只有完整显示弹幕的情况下可以拖动，其他时候无法点击
+            //现在右边只有完整显示的情况下可以拖动，其他时候无法点击
             if(mWindowLen < mMaxWindowLen) {
                 return;
             }

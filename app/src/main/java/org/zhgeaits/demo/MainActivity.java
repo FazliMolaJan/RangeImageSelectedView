@@ -2,6 +2,7 @@ package org.zhgeaits.demo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.SparseIntArray;
 import android.view.View;
 import android.widget.Button;
 
@@ -49,7 +50,7 @@ public class MainActivity extends Activity {
         addWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                seekbar.addScaledRangeView(0, 0, 30);
+                seekbar.addScaledRangeView(0, seekbar.getCurrentProgress(), 30);
             }
         });
 
@@ -63,21 +64,25 @@ public class MainActivity extends Activity {
         addFixedWindow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                seekbar.addFixedRangeView(0, 0, 30, 30);
+                seekbar.addFixedRangeView(0, seekbar.getCurrentProgress(), 30, 30);
             }
         });
 
         addrange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(seekbar.isRangeViewVisible()) {
+                    seekbar.addMarkRange(0);
+                }
             }
         });
 
         addpoint.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(seekbar.isRangeViewVisible()) {
+                    seekbar.addMarkPoint(0);
+                }
             }
         });
     }

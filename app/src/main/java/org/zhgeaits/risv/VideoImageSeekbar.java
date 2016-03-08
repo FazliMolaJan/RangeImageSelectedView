@@ -16,10 +16,10 @@
 package org.zhgeaits.risv;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.SparseIntArray;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,7 +52,6 @@ public class VideoImageSeekbar extends RelativeLayout {
     private MultiPointBar mPointbar;
 
     private Map<Integer, RangeImageSelectedView> mCacheRangeView;
-    private SparseIntArray mDanmuColor;
 
     private int mImageBarLen;                                       //图片的长度，进度条真正意义的像素长度
     private int mLeftBlankWidth;                                    //左边空白处的宽度
@@ -116,10 +115,6 @@ public class VideoImageSeekbar extends RelativeLayout {
         });
     }
 
-    public void setOnProgressChangeListener(OnSeekbarChangedListener listener) {
-        this.mProgressChangeListener = listener;
-    }
-
     /**
      * 设置最大的进度值，一般设置为100
      *
@@ -137,15 +132,6 @@ public class VideoImageSeekbar extends RelativeLayout {
     public double getCurrentProgress() {
         double progress = (double) (mCurrentProgress - mLeftBlankWidth) * mMaxProgress / (double) mImageBarLen;
         return progress;
-    }
-
-    /**
-     * 设置弹幕的颜色缓存
-     *
-     * @param danmuColor
-     */
-    public void setDanmuColor(SparseIntArray danmuColor) {
-        mDanmuColor = danmuColor;
     }
 
     /**
@@ -176,6 +162,42 @@ public class VideoImageSeekbar extends RelativeLayout {
     }
 
     /**
+     * 获取当前窗口最大值的百分比，0-100之间
+     * @return
+     */
+    public double getCurrentMaxWindowProgress() {
+        if (mRangeView != null) {
+            return mRangeView.getMaxWindowLen() * mMaxProgress / mImageBarLen;
+        }
+        return 0;
+    }
+
+    /**
+     * 获取当前的最大窗口值
+     *
+     * @return
+     */
+    public int getCurrentMaxWindowLen() {
+        if (mRangeView != null) {
+            return mRangeView.getMaxWindowLen();
+        }
+        return 0;
+    }
+
+    /**
+     * 设置当前选择框的最大值
+     *
+     * @param selectProgress 传值是0-100之间的百分比
+     * @return
+     */
+    public void setCurrentMaxWindowLen(int selectProgress) {
+        int windowLen = selectProgress * mImageBarLen / mMaxProgress;
+        if (mRangeView != null) {
+            mRangeView.setMaxWindowLen(windowLen);
+        }
+    }
+
+    /**
      * 获取当前的rang id
      *
      * @return
@@ -201,7 +223,7 @@ public class VideoImageSeekbar extends RelativeLayout {
     }
 
     /**
-     * 获取当前选择框的类型，是弹幕的还是标签的。
+     * 获取当前选择框的类型
      *
      * @return
      */
@@ -210,90 +232,6 @@ public class VideoImageSeekbar extends RelativeLayout {
             return mRangeView.getChangeType();
         }
         return -1;
-    }
-
-    /**
-     * 设置最后一张图片宽度的百分比
-     *
-     * @param percent
-     */
-    public void setLastImageWidthPercent(double percent) {
-        mLastImageWidthPercent = percent;
-    }
-
-    private void setImageList0(List<Drawable> lists) {
-        mList.removeAllViews();
-
-        mImageHeight = DimenConverter.dip2px(mContext, 36);
-        mImageWidth = DimenConverter.dip2px(mContext, 27);
-        mSelectbarWidth = DimenConverter.dip2px(mContext, 4);
-        mLeftBlankWidth = mSelectbar.getLeft();
-        mRightBlankWidth = mLeftBlankWidth + mSelectbarWidth;
-        mCurrentProgress = mLeftBlankWidth;
-
-        View leftBlank = new View(mContext);
-        ViewGroup.LayoutParams leftParam = new RelativeLayout.LayoutParams(mLeftBlankWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-        leftBlank.setLayoutParams(leftParam);
-        mList.addView(leftBlank);
-
-        mImageBarLen = 0;
-        for (int i = 0; i < lists.size(); i++) {
-
-            ImageView imageView = new ImageView(mContext);
-
-            int destWidth = mImageWidth;
-            if (i == lists.size() - 1) {
-                destWidth = (int) (mImageWidth * mLastImageWidthPercent);
-            }
-
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(destWidth, mImageHeight);
-            params.gravity = Gravity.CENTER_VERTICAL;
-            imageView.setLayoutParams(params);
-            imageView.setBackgroundDrawable(lists.get(i));
-            mList.addView(imageView);
-            mImageBarLen += destWidth;
-        }
-
-        View rightBlank = new View(mContext);
-        ViewGroup.LayoutParams rightParam = new RelativeLayout.LayoutParams(mRightBlankWidth, ViewGroup.LayoutParams.MATCH_PARENT);
-        rightBlank.setLayoutParams(rightParam);
-        mList.addView(rightBlank);
-
-        mHorizontalScrollView.setBarLength(getWidth());
-        mHorizontalScrollView.setImageBarLen(mImageBarLen);
-        mHorizontalScrollView.setSeekWidth(mImageBarLen + mLeftBlankWidth + mRightBlankWidth);
-    }
-
-    public void setImageListPath(List<String> paths) {
-        List<Drawable> lists = new ArrayList<>();
-        for(int i = 0; i < paths.size(); i ++) {
-            Drawable drawable = BitmapDrawable.createFromPath(paths.get(i));
-            lists.add(drawable);
-        }
-        setImageList0(lists);
-    }
-
-    public void setImageListIds(List<Integer> ids) {
-        List<Drawable> lists = new ArrayList<>();
-        for(int i = 0; i < ids.size(); i ++) {
-            Drawable drawable = getResources().getDrawable(ids.get(i));
-            lists.add(drawable);
-        }
-        setImageList0(lists);
-    }
-
-    /**
-     * 设置左边选择按钮
-     * @param leftChange
-     */
-    public void setLeftChange(boolean leftChange) {
-        if (mRangeView == null) {
-            return;
-        }
-
-        if(mRangeView.getChangeType() == RangeImageSelectedView.CHANGE_TYPE_MOVE) {
-            mRangeView.setLeftChange(leftChange);
-        }
     }
 
     /**
@@ -341,42 +279,6 @@ public class VideoImageSeekbar extends RelativeLayout {
     }
 
     /**
-     * 获取当前窗口最大值的百分比，0-100之间
-     * @return
-     */
-    public double getCurrentMaxWindowProgress() {
-        if (mRangeView != null) {
-            return mRangeView.getMaxWindowLen() * mMaxProgress / mImageBarLen;
-        }
-        return 0;
-    }
-
-    /**
-     * 获取当前的最大窗口值
-     *
-     * @return
-     */
-    public int getCurrentMaxWindowLen() {
-        if (mRangeView != null) {
-            return mRangeView.getMaxWindowLen();
-        }
-        return 0;
-    }
-
-    /**
-     * 设置当前选择框的最大值
-     *
-     * @param selectProgress 传值是0-100之间的百分比
-     * @return
-     */
-    public void setCurrentMaxWindowLen(int selectProgress) {
-        int windowLen = selectProgress * mImageBarLen / mMaxProgress;
-        if (mRangeView != null) {
-            mRangeView.setMaxWindowLen(windowLen);
-        }
-    }
-
-    /**
      * 删除选择窗口
      *
      * @param id
@@ -399,53 +301,11 @@ public class VideoImageSeekbar extends RelativeLayout {
      * @param id
      */
     public void invisibleRangeView(int id) {
-        mSeekbarContainer.removeView(mRangeView);
-
         if (RangeImageSelectedView.CHANGE_TYPE_MOVE == getCurrentRangeType()) {
-            if (mDanmuColor != null) {
-                addDanmuPoint(id, mDanmuColor.get(id));
-            }
+            addMarkPoint(id);
         } else {
-            addLabelRange(id);
+            addMarkRange(id);
         }
-
-        mRangeView = null;
-    }
-
-    /**
-     * 添加标签的选择范围
-     *
-     * @param id
-     */
-    public void addLabelRange(int id) {
-        if (mRangebar == null) {
-            mRangebar = new MultiRangebar(mContext);
-            mRangebar.setBarWidth(mList.getWidth());
-            RelativeLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.BELOW, R.id.video_image_seekbar_list);
-            params.topMargin = DimenConverter.dip2px(mContext, 1);
-            mRangebar.setLayoutParams(params);
-            mSeekbarContainer.addView(mRangebar);
-        }
-        mRangebar.addRange(id, mRangeView.getWindowStart(), mRangeView.getWindowStart() + mRangeView.getWindowLen());
-    }
-
-    /**
-     * 显示弹幕的点
-     *
-     * @param id
-     * @param color
-     */
-    public void addDanmuPoint(int id, int color) {
-        if (mPointbar == null) {
-            mPointbar = new MultiPointBar(mContext);
-            mPointbar.setBarWidth(mList.getWidth());
-            RelativeLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            params.addRule(RelativeLayout.ABOVE, R.id.video_image_seekbar_list);
-            mPointbar.setLayoutParams(params);
-            mSeekbarContainer.addView(mPointbar);
-        }
-        mPointbar.addPoint(id, mRangeView.getWindowStart(), color);
     }
 
     /**
@@ -467,12 +327,8 @@ public class VideoImageSeekbar extends RelativeLayout {
             mRangeView = rangeView;
 
             mSeekbarContainer.addView(mRangeView);
-            //如果是标签，则需要去掉底部的选中范围条，如果是弹幕，则去掉点
-            if (RangeImageSelectedView.CHANGE_TYPE_SCALE == getCurrentRangeType()) {
-                mRangebar.removeRange(id);
-            } else if (RangeImageSelectedView.CHANGE_TYPE_MOVE == getCurrentRangeType()) {
-                mPointbar.removePoint(id);
-            }
+            mRangebar.removeRange(id);
+            mPointbar.removePoint(id);
 
             //广播进度条
             if (mProgressChangeListener != null) {
@@ -483,6 +339,51 @@ public class VideoImageSeekbar extends RelativeLayout {
             }
         }
     }
+
+    /**
+     * 添加标记的选择范围
+     *
+     * @param id
+     */
+    public void addMarkRange(int id) {
+        mSeekbarContainer.removeView(mRangeView);
+
+        if (mRangebar == null) {
+            mRangebar = new MultiRangebar(mContext);
+            mRangebar.setBarWidth(mList.getWidth());
+            RelativeLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.BELOW, R.id.video_image_seekbar_list);
+            params.topMargin = DimenConverter.dip2px(mContext, 1);
+            mRangebar.setLayoutParams(params);
+            mSeekbarContainer.addView(mRangebar);
+        }
+        mRangebar.addRange(id, mRangeView.getWindowStart(), mRangeView.getWindowStart() + mRangeView.getWindowLen());
+
+        mRangeView = null;
+    }
+
+    /**
+     * 显示标记的点
+     *
+     * @param id
+     */
+    public void addMarkPoint(int id) {
+        mSeekbarContainer.removeView(mRangeView);
+
+        int color = Color.parseColor("#FF8900");
+        if (mPointbar == null) {
+            mPointbar = new MultiPointBar(mContext);
+            mPointbar.setBarWidth(mList.getWidth());
+            RelativeLayout.LayoutParams params = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            params.addRule(RelativeLayout.ABOVE, R.id.video_image_seekbar_list);
+            mPointbar.setLayoutParams(params);
+            mSeekbarContainer.addView(mPointbar);
+        }
+        mPointbar.addPoint(id, mRangeView.getWindowStart(), color);
+
+        mRangeView = null;
+    }
+
 
     /**
      * 添加标签的选择框
@@ -542,9 +443,10 @@ public class VideoImageSeekbar extends RelativeLayout {
         int maxWindowLen = maxWindowSelect * mImageBarLen / mMaxProgress;
         mRangeView.setWindowStart(windowStart);
         mRangeView.setWindowLen(windowLen);
-        //图片标签才会有最小宽度，弹幕没有，默认是0
+        //最小宽度，默认是0
         mRangeView.setMinWindowLen(minWindowLen);
 
+        //todo
         //如果是固定的选择框才会有最大值
         if (changeType == RangeImageSelectedView.CHANGE_TYPE_MOVE) {
             if (maxWindowLen > 0) {
@@ -602,6 +504,89 @@ public class VideoImageSeekbar extends RelativeLayout {
             //通知进度条的范围
             mProgressChangeListener.onRangeChanged(mRangeView.getId(), startProgress / 100.0d, selectProgress / 100.0d);
         }
+    }
+
+
+    /**
+     * 设置最后一张图片宽度的百分比
+     *
+     * @param percent
+     */
+    public void setLastImageWidthPercent(double percent) {
+        mLastImageWidthPercent = percent;
+    }
+
+    private void setImageList0(List<Drawable> lists) {
+        mList.removeAllViews();
+
+        mImageHeight = DimenConverter.dip2px(mContext, 36);
+        mImageWidth = DimenConverter.dip2px(mContext, 27);
+        mSelectbarWidth = DimenConverter.dip2px(mContext, 4);
+        mLeftBlankWidth = mSelectbar.getLeft();
+        mRightBlankWidth = mLeftBlankWidth + mSelectbarWidth;
+        mCurrentProgress = mLeftBlankWidth;
+
+        View leftBlank = new View(mContext);
+        ViewGroup.LayoutParams leftParam = new RelativeLayout.LayoutParams(mLeftBlankWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+        leftBlank.setLayoutParams(leftParam);
+        mList.addView(leftBlank);
+
+        mImageBarLen = 0;
+        for (int i = 0; i < lists.size(); i++) {
+
+            ImageView imageView = new ImageView(mContext);
+
+            int destWidth = mImageWidth;
+            if (i == lists.size() - 1) {
+                destWidth = (int) (mImageWidth * mLastImageWidthPercent);
+            }
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(destWidth, mImageHeight);
+            params.gravity = Gravity.CENTER_VERTICAL;
+            imageView.setLayoutParams(params);
+            imageView.setBackgroundDrawable(lists.get(i));
+            mList.addView(imageView);
+            mImageBarLen += destWidth;
+        }
+
+        View rightBlank = new View(mContext);
+        ViewGroup.LayoutParams rightParam = new RelativeLayout.LayoutParams(mRightBlankWidth, ViewGroup.LayoutParams.MATCH_PARENT);
+        rightBlank.setLayoutParams(rightParam);
+        mList.addView(rightBlank);
+
+        mHorizontalScrollView.setBarLength(getWidth());
+        mHorizontalScrollView.setImageBarLen(mImageBarLen);
+        mHorizontalScrollView.setSeekWidth(mImageBarLen + mLeftBlankWidth + mRightBlankWidth);
+    }
+
+    /**
+     * 设置图片背景
+     * @param paths
+     */
+    public void setImageListPath(List<String> paths) {
+        List<Drawable> lists = new ArrayList<>();
+        for(int i = 0; i < paths.size(); i ++) {
+            Drawable drawable = BitmapDrawable.createFromPath(paths.get(i));
+            lists.add(drawable);
+        }
+        setImageList0(lists);
+    }
+
+    /**
+     * 设置图片背景
+     * @param ids
+     */
+    public void setImageListIds(List<Integer> ids) {
+        List<Drawable> lists = new ArrayList<>();
+        for(int i = 0; i < ids.size(); i ++) {
+            Drawable drawable = getResources().getDrawable(ids.get(i));
+            lists.add(drawable);
+        }
+        setImageList0(lists);
+    }
+
+    public void setOnProgressChangeListener(OnSeekbarChangedListener listener) {
+        this.mProgressChangeListener = listener;
     }
 
     public interface OnSeekbarChangedListener {
